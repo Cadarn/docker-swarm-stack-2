@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+  cms:
+    image: drupal:8.2 # Use the local custom drupal
+    ports:
+      - '8080:80' # expose 8080 on host and sent to 80 in container
+    volumes:
+      - drupal-modules:/var/www/html/modules
+      - drupal-profiles:/var/www/html/profiles
+      - drupal-themes:/var/www/html/themes
+      - drupal-sites:/var/www/html/sites
+  postgres-db:
+    image: postgres:9.6-alpine  # this will an alpine 9.6 version
+    environment:
+      POSTGRES_PASSWORD_FILE: /usr/secrets/psql-pw
+    secrets:
+      - psql-pw
+    volumes:
+      - drupal-data:/var/lib/postgresql/data
+
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-themes:
+  drupal-sites:
+  drupal-data:
+
+secrets:
+  psql-pw:
+    external: true
